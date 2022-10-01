@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <form action="{% url 'create' %}" method="post">
+        {% csrf_token %}
+        <h1> Add a new listing</h1>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Title</span>
+            <input type="text" class="form-control" name="title" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">URL of image</span>
+            <input type="text" class="form-control" name="image" id="basic-url" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Category</span>
+            <input type="text" class="form-control" name="category" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text">Description</span>
+            <textarea class="form-control" name="description" aria-label="With textarea"></textarea>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Initial bid price</span>
+            <input type="text" class="form-control" name="bid_init" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+        <input type="submit" value="Create listing">
+    </form>
+{% endblock %}

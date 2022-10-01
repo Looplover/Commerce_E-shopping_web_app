@@ -1,0 +1,79 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h1>{{listing.title}}</h1>
+    <br>
+    <br>
+    <img src="{{listing.image}}" class="img-thumbnail" alt="{{listing.title}}" width=400px>
+    <br>
+    <br>
+    {% if not listing.closed %}
+        <h3>Current Price: {{winner.amt}}</h3>
+        <br>
+        <p>{{listing.description}}</p>
+        <br>
+        {% if user.is_authenticated %}
+            {% if listing not in watchlist %}
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="add" name="status">
+                    <input type="submit" value="Add to watchlist">
+                </form>
+            {% else %}
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value="remove" name="status">
+                    <input type="submit" value="Remove from watchlist">
+                </form>
+                <br>
+                <br>
+            {% endif %}
+            {% if message %}
+                <p style="color:red">{{message}}</p>
+            {% endif %}
+            <form action="{% url 'listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" aria-label="Recipient's username" aria-describedby="button-addon2" name="bidcost">
+                    <input type="hidden" value="bid" name="bid">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Bid</button>
+                </div>
+            </form>
+            <br>
+            <br>
+            {% if user == creator.user %}
+                <form action="{% url 'close' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" value={{listing.id}} name="id">
+                    <input type="submit" value="Close the listing">
+                </form>
+            {% endif %}
+            <br>
+            <br>
+            <div>
+                <h2>Comments</h2>
+                {% for comment in comments %}
+                    <div>
+                        <h4>{{comment.user.username}}</h4>
+                        <p>{{comment.comment}}</p>
+                    </div>
+                    <br>
+                {% endfor %}
+                <form action="{% url 'comment' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <span class="input-group-text">Add Comment</span>
+                        <textarea class="form-control" name="comment" aria-label="With textarea"></textarea>
+                    </div>
+                    <input type="submit" value="comment">
+                </form>
+            </div>
+        {% endif %}
+    {% else %}
+        {% if user == winner.user %}
+            <h2> Congratulations! You won the bid. Kindly proceed with the checkout process.</h2>
+        {% else %}
+            <h2> The bid has been closed.</h2>
+        {% endif %}
+    {% endif %}
+{% endblock %}
